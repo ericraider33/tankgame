@@ -1,0 +1,5 @@
+https://github.com/ericraider33/tankgame.git
+
+https://stackoverflow.com/questions/6084360/using-node-js-as-a-simple-web-server
+npm install node-static -g
+
