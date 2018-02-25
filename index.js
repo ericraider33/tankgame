@@ -3,19 +3,21 @@
 (function ()
 {	
     $(document).ready(handleDocumentReady);
-	window.onerror = handleErrors;
+//	window.onerror = handleErrors;
 	window.onkeydown = handleKeyDown;
 	
 	var context;
-	var circleImage;
+	var images = [];
+	var circleImage, bgImage;
 	
 	var shift = 0;
 	var frameWidth = 300;
 	var frameHeight = 300;
 	var totalFrames = 24;
 	var currentFrame = 0;
+	var bgShift = 0;
 	
-	var block = new bto.Sprite({ position: { x: 5, y: 5 } });
+	var block = new bto.Sprite({ position: { x: 5, y: 5 }, size: { width: 25, height: 25 } });
 	
     return;
 
@@ -35,14 +37,28 @@
 		var canvas = $('#main-canvas')[0];
 		context = canvas.getContext('2d');
 		
-		circleImage = new Image();
-		circleImage.src = "images/sprites_final.png";
-		circleImage.addEventListener("load", handleCircleLoaded, false);		
+		circleImage = loadImage("images/sprites_final.png");		
+		bgImage = loadImage("images/background_a.png");
     }
 	
-	function handleCircleLoaded()
+	function loadImage(src)
 	{
-		animate();
+		var result = new Image();
+		result.loaded = false;
+		images.push(result);
+		result.addEventListener("load", handleImageLoaded, false);		
+		result.src = src;	
+		return result;		
+	}
+	
+	function handleImageLoaded(event)
+	{
+		var image = event.target;
+		image.loaded = true;
+		
+		var pending = images.filter(function(x) { return !x.loaded; });
+		if (pending.length === 0)
+			animate();
 	}
 		
 	function handleKeyDown(e)
@@ -94,21 +110,27 @@
 	
 	function drawSprite(sprite)
 	{
-		context.fillStyle = 'rgb(100,225,150)'; 
+		context.fillStyle = 'rgb(255,0,64)'; 
 		context.fillRect(sprite.position.x, sprite.position.y, sprite.size.width, sprite.size.height); 				
 	}
 	
 	function animate() 
 	{
-		if (block.hasMoved())
-			clearSprite(block);
+		context.clearRect(0, 0, 640, 480);
 		
-		context.clearRect(120, 25, 300, 300);
-
+		context.drawImage(bgImage, bgShift, 0, 640, 480, 0, 0, 640, 480);
+		bgShift++;
+		if (bgShift >= 640*2)
+			bgShift = 0;
+		
+//		if (block.hasMoved())
+//			clearSprite(block);
+		
 		// draw each frame + place them in the middle
-		context.drawImage(circleImage, shift, 0, frameWidth, frameHeight, 120, 25, frameWidth, frameHeight);
-		shift += frameWidth + 1;
-
+//		context.clearRect(120, 25, 300, 300);
+//		context.drawImage(circleImage, shift, 0, frameWidth, frameHeight, 120, 25, frameWidth, frameHeight);
+//		shift += frameWidth + 1;
+/*
 		// Start over
 		if (currentFrame == totalFrames) 
 		{
@@ -116,9 +138,10 @@
 			currentFrame = 0;
 		}
 		currentFrame++;
-
-		if (block.hasMoved())
-			drawSprite(block);
+*/
+//		if (block.hasMoved())
+		
+		drawSprite(block);
 		
 		block.resetMoved();
 		window.requestAnimationFrame(animate);
