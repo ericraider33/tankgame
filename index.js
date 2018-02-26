@@ -17,8 +17,7 @@
 	var currentFrame = 0;
 	var bgShift = 0;
 	
-	var block = new bto.Sprite({ position: { x: 5, y: 5 }, size: { width: 20, height: 34 } });
-	block.keyFrame = 0;
+	var block = new bto.Sprite({ position: { x: 5, y: 5 }, size: { width: 20*3, height: 34*3 }, zoom: 3, keyFrameCount: 3 });
 	
     return;
 
@@ -41,6 +40,8 @@
 		circleImage = loadImage("images/sprites_final.png");		
 		bgImage = loadImage("images/background_a.png");
 		luigiImage = loadImage("images/luigi_sprite.png");
+		
+		block.image = luigiImage;
     }
 	
 	function loadImage(src)
@@ -103,9 +104,7 @@
 			return;
 		
 		sprite.position.x = x;
-		sprite.keyFrame += 1;
-		if (sprite.keyFrame === 3)
-			sprite.keyFrame = 0;
+		sprite.addKeyFrame();
 	}
 	
 	function clearSprite(sprite)
@@ -115,7 +114,8 @@
 	
 	function drawSprite(sprite)
 	{		
-		context.drawImage(luigiImage, sprite.keyFrame*20, 0, 20, 34, sprite.position.x, sprite.position.y, 20*3, 34*3);
+//		context.drawImage(luigiImage, sprite.keyFrame*20, 0, 20, 34, sprite.position.x, sprite.position.y, 20*3, 34*3);
+		sprite.drawSprite(context);
 	}
 	
 	function animate() 
