@@ -18,6 +18,7 @@
 	var bgShift = 0;
 	
 	var block = new bto.Sprite({ position: { x: 5, y: 5 }, size: { width: 20*3, height: 34*3 }, zoom: 3, keyFrameCount: 3 });
+	var koopa = new bto.Sprite({ position: { x: 400, y: 370 }, size: { width: 75, height: 76 }, zoom: 1, keyFrameCount: 1 });
 	
     return;
 
@@ -42,6 +43,7 @@
 		luigiImage = loadImage("images/luigi_sprite.png");
 		
 		block.image = luigiImage;
+		koopa.image = loadImage("images/koopa_troopa.png");
     }
 	
 	function loadImage(src)
@@ -145,7 +147,9 @@
 */
 //		if (block.hasMoved())
 		
-		drawSprite(block);
+		block.drawSprite(context);
+		
+		koopa.drawSprite(context);
 		
 		block.resetMoved();
 		window.requestAnimationFrame(animate);
