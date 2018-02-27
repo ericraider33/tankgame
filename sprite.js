@@ -1,11 +1,8 @@
-"use strict";
-
 var bto;
 if (bto == null)
     bto = {};
 else if (typeof bto != 'object')
     throw "BTO is not valid: " + (typeof bto);
-
 
 (function ()
 {	
@@ -21,7 +18,17 @@ else if (typeof bto != 'object')
 		this.keyFrame = typeof options.keyFrame === "number" ? options.keyFrame : 0;
 		this.keyFrameCount = typeof options.keyFrameCount === "number" ? options.keyFrameCount : 1;
 		return this;		
-	}	
+	}
+
+	bto.Sprite = Sprite;			
+
+	Sprite.prototype = {
+		hasMoved: hasMoved,
+		resetMoved: resetMoved,
+		drawSprite: drawSprite,
+		addKeyFrame: addKeyFrame,
+		moveSprite: moveSprite
+	};	
 	
 	function hasMoved()
 	{
@@ -39,6 +46,12 @@ else if (typeof bto != 'object')
 		if (this.keyFrame >= this.keyFrameCount)
 			this.keyFrame = 0;		
 	}
+	
+	function moveSprite(movement, timestamp)
+	{		
+		this.position = movement.move(this.position, timestamp);		
+		return this.position;
+	}
 
 	function drawSprite(context)
 	{		
@@ -54,13 +67,7 @@ else if (typeof bto != 'object')
 				this.position.x, this.position.y, 
 				this.size.width, this.size.height);
 		}
-	}
-	
-	bto.Sprite = Sprite;
-	bto.Sprite.prototype.hasMoved = hasMoved;	
-	bto.Sprite.prototype.resetMoved = resetMoved;	
-	bto.Sprite.prototype.drawSprite = drawSprite;
-	bto.Sprite.prototype.addKeyFrame = addKeyFrame;
+	}			
 })();
 
 

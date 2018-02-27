@@ -18,7 +18,8 @@
 	var bgShift = 0;
 	
 	var block = new bto.Sprite({ position: { x: 5, y: 5 }, size: { width: 20*3, height: 34*3 }, zoom: 3, keyFrameCount: 3 });
-	var koopa = new bto.Sprite({ position: { x: 400, y: 370 }, size: { width: 75, height: 76 }, zoom: 1, keyFrameCount: 1 });
+	var koopa = new bto.Sprite({ position: { x: 480, y: 370 }, size: { width: 75, height: 76 }, zoom: 1, keyFrameCount: 1 });
+	koopa.movement = new bto.VectorMovement({ speedX: -40 });
 	
     return;
 
@@ -128,30 +129,14 @@
 		bgShift++;
 		if (bgShift >= 640*2)
 			bgShift = 0;
-		
-//		if (block.hasMoved())
-//			clearSprite(block);
-		
-		// draw each frame + place them in the middle
-//		context.clearRect(120, 25, 300, 300);
-//		context.drawImage(circleImage, shift, 0, frameWidth, frameHeight, 120, 25, frameWidth, frameHeight);
-//		shift += frameWidth + 1;
-/*
-		// Start over
-		if (currentFrame == totalFrames) 
-		{
-			shift = 0;
-			currentFrame = 0;
-		}
-		currentFrame++;
-*/
-//		if (block.hasMoved())
+
+		var timestamp = Date.now();
 		
 		block.drawSprite(context);
-		
+
+		koopa.moveSprite(koopa.movement, timestamp);
 		koopa.drawSprite(context);
 		
-		block.resetMoved();
 		window.requestAnimationFrame(animate);
 	}		
 	
