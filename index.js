@@ -10,13 +10,7 @@
 	var images = [];
 	var circleImage, bgImage, luigiImage;
 	
-	var shift = 0;
-	var frameWidth = 300;
-	var frameHeight = 300;
-	var totalFrames = 24;
-	var currentFrame = 0;
-	var bgShift = 0;
-	
+	var viewPort = new bto.ViewPort({});
 	var block = new bto.Sprite({ position: { x: 5, y: 5 }, size: { width: 20*3, height: 34*3 }, zoom: 3, keyFrameCount: 3 });
 	var koopa = new bto.Sprite({ position: { x: 480, y: 370 }, size: { width: 75, height: 76 }, zoom: 1, keyFrameCount: 1 });
 	koopa.movement = new bto.VectorMovement({ speedX: -40 });
@@ -80,63 +74,76 @@
 			case 40: moveY(block, false);	break;
 		}
 	}
-	
+
 	function moveY(sprite, up)
 	{
-		var y = sprite.position.y;
+		var bounds = sprite.getBounds();
+		var yDiff = 5;
 		if (up)
-			y = y - sprite.speed;
+		{
+			yDiff = -1 * yDiff;
+			bounds.top += yDiff;
+			yDiff += Math.max(0, 0 - bounds.top);									// limits smaller than viewPort's top edge (of zero)
+		}
 		else
-			y = y + sprite.speed;
+		{
+			bounds.bottom += yDiff;
+			yDiff += Math.min(0, viewPort.size.height - bounds.bottom);				// limits larger than viewPort height
+		}
 		
-		if (y < 0 || y + sprite.size.height > context.canvas.height)
+		if (yDiff === 0)
 			return;
 		
-		sprite.position.y = y;
+		sprite.position.y += yDiff;
 	}
 	
 	function moveX(sprite, right)
 	{
-		var x = sprite.position.x;
+		var bounds = sprite.getBounds()
+		var xDiff = 5;
 		if (right)
-			x = x + sprite.speed;
+		{
+			bounds.right += xDiff;
+			xDiff += Math.min(0, viewPort.size.width - bounds.right);				// limits larger than viewPort width
+		}
 		else
-			x = x - sprite.speed;
+		{
+			xDiff = -1 * xDiff;
+			bounds.left += xDiff;
+			xDiff += Math.max(0, 0 - bounds.left);									// limits smaller than viewPort's left edge (of zero)
+		}
 		
-		if (x < 0 || x + sprite.size.width > context.canvas.width)
+		if (xDiff === 0)
 			return;
 		
-		sprite.position.x = x;
+		sprite.position.x += xDiff;
 		sprite.addKeyFrame();
-	}
-	
-	function clearSprite(sprite)
-	{
-		context.clearRect(sprite.oldPosition.x, sprite.oldPosition.y, sprite.size.width, sprite.size.height);
-	}
-	
-	function drawSprite(sprite)
-	{		
-//		context.drawImage(luigiImage, sprite.keyFrame*20, 0, 20, 34, sprite.position.x, sprite.position.y, 20*3, 34*3);
-		sprite.drawSprite(context);
 	}
 	
 	function animate() 
 	{
-		context.clearRect(0, 0, 640, 480);
+		context.clearRect(0, 0, viewPort.viewable.width, viewPort.viewable.height);
+
+		var vpTranslate = viewPort.setTranslate(block.getBounds());
+		context.translate(vpTranslate.x, vpTranslate.y);
 		
-		context.drawImage(bgImage, bgShift, 0, 640, 480, 0, 0, 640, 480);
-		bgShift++;
-		if (bgShift >= 640*2)
-			bgShift = 0;
+		var bgShift = -1 * vpTranslate.x;
+		var bgShiftRepeat = bgShift % (viewPort.viewable.width * 2);
+		context.drawImage(bgImage, 
+			bgShiftRepeat, -1*vpTranslate.y, viewPort.viewable.width, viewPort.viewable.height, 
+			bgShift, 	   -1*vpTranslate.y, viewPort.viewable.width, viewPort.viewable.height
+			);
 
 		var timestamp = Date.now();
 		
 		block.drawSprite(context);
 
 		koopa.moveSprite(koopa.movement, timestamp);
+		
+		
 		koopa.drawSprite(context);
 		
+		context.setTransform(1, 0, 0, 1, 0, 0);		// clears transform
 		window.requestAnimationFrame(animate);
 	}		
 	

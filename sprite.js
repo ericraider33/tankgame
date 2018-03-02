@@ -11,7 +11,6 @@ else if (typeof bto != 'object')
 		options = options || {};
 		this.position = options.position || { x: 0, y: 0 };
 		this.oldPosition = { x: -1, y: -1};								// starts with hasMoved to true
-		this.speed = options.speed || 5;
 		this.size = options.size || { width: 10, height: 10 }
 		this.zoom = typeof options.zoom === "number" ? options.zoom : 1;
 		this.image = options.image || null;
@@ -27,7 +26,8 @@ else if (typeof bto != 'object')
 		resetMoved: resetMoved,
 		drawSprite: drawSprite,
 		addKeyFrame: addKeyFrame,
-		moveSprite: moveSprite
+		moveSprite: moveSprite,
+		getBounds: getBounds
 	};	
 	
 	function hasMoved()
@@ -67,7 +67,17 @@ else if (typeof bto != 'object')
 				this.position.x, this.position.y, 
 				this.size.width, this.size.height);
 		}
-	}			
+	}	
+
+	function getBounds()
+	{
+		return { 
+			left: this.position.x, 
+			top: this.position.y,
+			right: this.position.x + this.size.width, 
+			bottom: this.position.y + this.size.height,
+			};
+	}
 })();
 
 
