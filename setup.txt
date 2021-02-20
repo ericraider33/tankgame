@@ -1,9 +1,21 @@
 https://github.com/ericraider33/tankgame.git
 
-https://stackoverflow.com/questions/6084360/using-node-js-as-a-simple-web-server
-npm install node-static -g
+1) Install the latest version of node: 
+	https://nodejs.org/en/
+	
+2) Install simple web-server:
+	https://stackoverflow.com/questions/6084360/using-node-js-as-a-simple-web-server
+	Install:
+		npm install http-server -g
+		
+3) Run app:
+	cd c:\dev\tankgame
+	http-server
 
-
+4) View game:
+	http://localhost:8080/index.html
+	
+	
 Nice Tips:
 https://www.html5rocks.com/en/tutorials/canvas/performance/
 
